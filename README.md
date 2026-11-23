@@ -25,7 +25,7 @@ npm start
 OPENAI_API_KEY="your-api-key" node src/cli.js "生成AIの最新ニュース"
 ```
 
-CLI では既定で WAV 音声を生成して再生します。VOICEVOX を使わず要約だけを表示する場合:
+CLI では既定で WAV 音声を生成して外部プレーヤーで再生します。CLI のプロセスは再生開始後に終了し、再生はバックグラウンドで続きます。VOICEVOX を使わず要約だけを表示する場合:
 
 ```sh
 OPENAI_API_KEY="your-api-key" node src/cli.js "生成AIの最新ニュース" --no-speak

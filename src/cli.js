@@ -16,7 +16,10 @@ if (!args.length || args.includes('--help') || args.includes('-h')) {
     const result = await readNews(query, { speak: !noSpeak, voiceOptions: outputPath ? { outputPath } : undefined });
     console.log(`検索語: ${result.query}\n\n${result.summary}`);
     if (result.audio && outputPath) console.log(`\n音声ファイル: ${outputPath}`);
-    else if (result.audio) await playAudio(result.audio);
+    else if (result.audio) {
+      await playAudio(result.audio);
+      console.log('\n音声再生を開始しました。再生はバックグラウンドで続きます。');
+    }
   } catch (error) {
     console.error(`エラー: ${error.message}`);
     process.exitCode = 1;
