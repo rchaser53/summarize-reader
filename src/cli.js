@@ -11,7 +11,7 @@ if (!args.length || args.includes('--help') || args.includes('-h')) {
   const noSpeak = args.includes('--no-speak');
   const outputIndex = args.indexOf('--output');
   const outputPath = outputIndex >= 0 ? args[outputIndex + 1] : undefined;
-  const query = args.filter((arg, index) => arg !== '--no-speak' && arg !== '--output' && index !== outputIndex + 1).join(' ');
+  const query = args.filter((arg, index) => arg !== '--no-speak' && arg !== '--output' && (outputIndex < 0 || index !== outputIndex + 1)).join(' ');
   try {
     const result = await readNews(query, { speak: !noSpeak, voiceOptions: outputPath ? { outputPath } : undefined });
     console.log(`検索語: ${result.query}\n\n${result.summary}`);
