@@ -1,50 +1,61 @@
 # summarize-reader
 
-指定したキーワードでニュースを検索し、記事情報を日本語で要約して、VOICEVOX のずんだもんに読み上げてもらう Node.js アプリです。ローカル GUI と CLI のどちらからも利用できます。
+ChatGPT で作成した要約文を、VOICEVOX のずんだもんに読み上げてもらうローカルアプリです。要約に AI API は使いません。
 
 ## 必要なもの
 
 - Node.js 20 以降
-- 要約用の OpenAI API キー
-- 読み上げる場合は起動中の VOICEVOX Engine
+- VOICEVOX Engine（読み上げ時）
+- ChatGPT アプリ（要約を作成するため）
 
-このアプリは追加の npm パッケージを使いません。ニュース検索には Google News RSS を使います。
+## 使い方
 
-## GUI
+1. ChatGPT のチャット欄に記事 URL を貼り、例えば次のように依頼します。
+
+   ```text
+   このURLの記事を日本語で要約してください。音声で聞きやすいよう、見出しやURLを含めず、要約本文だけを出してください。
+   https://example.com/article
+   ```
+
+2. ChatGPT の要約文をコピーします。
+3. 読み上げ方を選びます。
+
+### GUI に貼り付ける
 
 ```sh
-export OPENAI_API_KEY="your-api-key"
 npm start
 ```
 
-ブラウザーで <http://127.0.0.1:4173> を開き、キーワードを入力します。デフォルトでは VOICEVOX Engine を `http://127.0.0.1:50021` で参照します。GUI はブラウザーで再生するため、VOICEVOX に接続できる環境で開いてください。
+ブラウザーで <http://127.0.0.1:4173> を開き、ChatGPT の要約文を貼り付けて「ずんだもんで読み上げる」を押します。音声ができたらページ内プレーヤーの再生ボタンを押してください。
 
-## CLI
+### CLI で読み上げる
 
-```sh
-OPENAI_API_KEY="your-api-key" node src/cli.js "生成AIの最新ニュース"
-```
-
-CLI では既定で WAV 音声を生成して外部プレーヤーで再生します。CLI のプロセスは再生開始後に終了し、再生はバックグラウンドで続きます。VOICEVOX を使わず要約だけを表示する場合:
+要約文をコピーした状態で macOS のターミナルから実行します。
 
 ```sh
-OPENAI_API_KEY="your-api-key" node src/cli.js "生成AIの最新ニュース" --no-speak
+pbpaste | node src/cli.js
 ```
 
-音声を再生せず WAV ファイルとして保存する場合:
+または要約文を直接渡します。
 
 ```sh
-OPENAI_API_KEY="your-api-key" node src/cli.js "生成AIの最新ニュース" --output summary.wav
+node src/cli.js "ここにChatGPTの要約文を貼り付ける"
 ```
+
+WAV ファイルとして保存する場合:
+
+```sh
+pbpaste | node src/cli.js --output summary.wav
+```
+
+CLI は WAV を生成後に外部プレーヤーを起動し、再生の終了を待たずにターミナルへ戻ります。
 
 ## 設定
 
 | 環境変数 | 初期値 | 説明 |
 | --- | --- | --- |
-| `OPENAI_API_KEY` | なし | 要約 API の認証キー |
-| `OPENAI_MODEL` | `gpt-4o-mini` | Chat Completions API のモデル |
 | `VOICEVOX_URL` | `http://127.0.0.1:50021` | VOICEVOX Engine の URL |
 | `VOICEVOX_SPEAKER_ID` | `3` | 話者 ID。3 はずんだもん（ノーマル） |
 | `PORT` | `4173` | GUI サーバーのポート |
 
-要約は RSS に含まれるタイトル・配信元・概要をもとに作成します。記事本文の取得は行わず、元記事のリンクを結果に表示します。
+このアプリは記事の要約を生成しません。ChatGPT に URL を渡して要約を作り、結果を貼り付ける使い方です。そのため `OPENAI_API_KEY` は不要で、アプリから OpenAI API へのリクエストも行いません。
