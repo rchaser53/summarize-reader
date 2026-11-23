@@ -6,7 +6,7 @@ export async function searchNews(query, { limit = 5, fetchImpl = fetch } = {}) {
   url.searchParams.set('hl', 'ja');
   url.searchParams.set('gl', 'JP');
   url.searchParams.set('ceid', 'JP:ja');
-  const response = await fetchImpl(url, { headers: { 'user-agent': USER_AGENT } });
+  const response = await fetchImpl(url, { headers: { 'user-agent': USER_AGENT }, signal: AbortSignal.timeout(20_000) });
   if (!response.ok) throw new Error(`ニュース検索に失敗しました (HTTP ${response.status})`);
   const xml = await response.text();
   const items = [...xml.matchAll(/<item>([\s\S]*?)<\/item>/gi)].slice(0, limit);

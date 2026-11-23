@@ -7,12 +7,12 @@ export async function speakWithVoicevox(text, { baseUrl = process.env.VOICEVOX_U
     const queryUrl = new URL(`${base}/audio_query`);
     queryUrl.searchParams.set('text', chunk);
     queryUrl.searchParams.set('speaker', String(speaker));
-    const queryResponse = await fetchImpl(queryUrl, { method: 'POST' });
+    const queryResponse = await fetchImpl(queryUrl, { method: 'POST', signal: AbortSignal.timeout(30_000) });
     if (!queryResponse.ok) throw new Error(`VOICEVOX 音声クエリに失敗しました (HTTP ${queryResponse.status})。VOICEVOX Engine が起動しているか確認してください。`);
     const synthesisUrl = new URL(`${base}/synthesis`);
     synthesisUrl.searchParams.set('speaker', String(speaker));
     const synthesisResponse = await fetchImpl(synthesisUrl, {
-      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(await queryResponse.json()),
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(await queryResponse.json()), signal: AbortSignal.timeout(30_000),
     });
     if (!synthesisResponse.ok) throw new Error(`VOICEVOX 音声合成に失敗しました (HTTP ${synthesisResponse.status})`);
     clips.push(Buffer.from(await synthesisResponse.arrayBuffer()));

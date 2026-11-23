@@ -3,6 +3,7 @@ export async function summarizeNews(articles, { apiKey = process.env.OPENAI_API_
   if (!articles.length) throw new Error('検索結果がありませんでした。別のキーワードを試してください。');
   const response = await fetchImpl('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
+    signal: AbortSignal.timeout(45_000),
     headers: { authorization: `Bearer ${apiKey}`, 'content-type': 'application/json' },
     body: JSON.stringify({
       model,
