@@ -3,24 +3,23 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ニュース要約リーダー</title>
+  <title>要約読み上げ</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <main class="shell">
-    <header><span class="eyebrow">NEWS READER</span><h1>ニュースを、耳から。</h1><p>キーワードを入れると、ニュースを探して要約します。</p></header>
+    <header><span class="eyebrow">VOICE READER</span><h1>要約を、耳から。</h1><p>ChatGPTで作った要約を貼り付けて、ずんだもんの声で読み上げます。</p></header>
     <form id="reader-form">
-      <label for="query">調べたいこと</label>
-      <div class="search-row"><input id="query" name="query" required maxlength="200" placeholder="例：生成AIの最新ニュース"><button id="submit" type="submit">要約して読む <span aria-hidden="true">→</span></button></div>
-      <label class="toggle"><input id="speak" type="checkbox" checked><span>VOICEVOX ずんだもんで読み上げる</span></label>
+      <label for="summary-input">ChatGPTで作成した要約</label>
+      <textarea id="summary-input" name="summary" required maxlength="20000" rows="10" placeholder="ChatGPTの要約をここに貼り付けてください"></textarea>
+      <button id="submit" type="submit">ずんだもんで読み上げる <span aria-hidden="true">→</span></button>
     </form>
     <p id="status" role="status" aria-live="polite"></p>
     <section id="result" hidden>
-      <div class="result-heading"><span class="eyebrow">SUMMARY</span><button id="replay" class="secondary" type="button" hidden>もう一度聞く</button></div>
-      <article id="summary"></article>
-      <h2>参照したニュース</h2><ul id="articles"></ul>
+      <div class="result-heading"><span class="eyebrow">VOICEVOX</span></div>
+      <audio id="player" controls></audio>
     </section>
-    <footer>要約には OpenAI API、読み上げには起動中の VOICEVOX Engine を使います。</footer>
+    <footer>このアプリはAI要約をしません。ChatGPTの要約と起動中のVOICEVOX Engineを使います。</footer>
   </main>
   <script type="module" src="/app.js"></script>
 </body>

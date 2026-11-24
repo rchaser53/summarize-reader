@@ -2,26 +2,12 @@ import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readNews } from './reader.js';
 import { speakWithVoicevox } from './voicevox.js';
 
 const root = fileURLToPath(new URL('../public/', import.meta.url));
 const port = Number(process.env.PORT || 4173);
 const server = createServer(async (request, response) => {
   const pathname = new URL(request.url, 'http://localhost').pathname;
-  if (request.method === 'POST' && pathname === '/api/read') {
-    try {
-      const body = await readBody(request);
-      const { query } = JSON.parse(body);
-      const result = await readNews(query, { speak: false });
-      response.writeHead(200, { 'content-type': 'application/json; charset=utf-8' });
-      response.end(JSON.stringify({ query: result.query, articles: result.articles, summary: result.summary }));
-    } catch (error) {
-      response.writeHead(400, { 'content-type': 'application/json; charset=utf-8' });
-      response.end(JSON.stringify({ error: error.message }));
-    }
-    return;
-  }
   if (request.method === 'POST' && pathname === '/api/speak') {
     try {
       const { text } = JSON.parse(await readBody(request));
@@ -61,8 +47,8 @@ function readBody(request) {
     request.setEncoding('utf8');
     request.on('data', (chunk) => {
       body += chunk;
-      if (body.length > 16_384) {
-        reject(new Error('リクエストが大きすぎます。'));
+      if (body.length > 128_000) {
+        reject(new Error('文章が長すぎます (上限 128 KB)。'));
         request.destroy();
       }
     });

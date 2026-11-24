@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Search news, summarize it, and read it aloud with VOICEVOX",
+  "description": "Read ChatGPT-written summaries aloud with VOICEVOX",
   "bin": { "summarize-reader": "./src/cli.js" },
   "scripts": { "start": "node src/server.js", "test": "node --test" },
   "engines": { "node": ">=20" }
